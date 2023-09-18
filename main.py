@@ -39,6 +39,8 @@ def main(path: str, mode: str = "auto", script: str = None):
                     parsed_command(cd)
                 case "cat":
                     parsed_command(cat)
+                case "echo":
+                    parsed_command(echo)
                 case "exit":
                     pass
                 case "EXIT":
@@ -57,7 +59,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='VShell - cross platform linux shell emulator.'
                                                  ' App works in virtual filesystem inside a archives (tar, zip)')
     parser.add_argument('--archive', type=str, help='Path to archive.', default="ExampleDir/archive.tar")
-    parser.add_argument('--script', type=str, help='Path to archive.')
+    parser.add_argument('--script', type=str, help='Path to script INSIDE a archive')
     args = parser.parse_args()
     main(path=args.archive, script=args.script)
     # todo: script must be in archive !!! not by fs path! By vfs path!

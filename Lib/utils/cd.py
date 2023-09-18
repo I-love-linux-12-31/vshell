@@ -5,8 +5,14 @@ def cd(path: str = './', *args, **kwargs):
     new_path = Lib.vfs.simplify_path(path)
     try:
         if new_path.startswith('/'):
-            Lib.vfs.current_dir = new_path
-            Lib.vfs.vfs_current_dir_obj = Lib.vfs.get_object_by_path(new_path)
+            candidate = Lib.vfs.get_object_by_path(new_path)
+            if candidate.__class__.__name__ in ("VFSDirectory", "VFSRoot"):
+                Lib.vfs.current_dir = new_path
+                Lib.vfs.vfs_current_dir_obj = Lib.vfs.get_object_by_path(new_path)
+            elif candidate is None:
+                print("\033[31mError!\033[0m path is invalid!")
+            else:
+                print("\033[31mError!\033[0mIt is not a directory!")
         else:
             # if Lib.vfs.vfs_current_dir_obj.path == "/":
             #     if path.startswith("./"):
@@ -16,7 +22,9 @@ def cd(path: str = './', *args, **kwargs):
             if candidate.__class__.__name__ in ("VFSDirectory", "VFSRoot"):
                 Lib.vfs.vfs_current_dir_obj = candidate
                 Lib.vfs.current_dir = Lib.vfs.vfs_current_dir_obj.path
+            elif candidate is None:
+                print("\033[31mError!\033[0m path is invalid!")
             else:
                 print("\033[31mError!\033[0mIt is not a directory!")
     except Exception as e:
-        print("\033[31mError!\033[0m path is invalid!")
+        print("\033[31mError!\033[0m[E] path is invalid!")

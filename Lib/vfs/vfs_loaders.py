@@ -53,9 +53,9 @@ def build_root_from_zip_info(infolist: [...]):
             access = None
 
         if node.is_dir():
-            obj = vfs_classes.VFSDirectory(name=name, date=node.date_time, access=access)
+            obj = vfs_classes.VFSDirectory(name=name, date=node.date_time, access=access, path=path)
         else:
-            obj = vfs_classes.VFSFile(name=name, date=node.date_time, access=access, size=node.file_size)
+            obj = vfs_classes.VFSFile(name=name, date=node.date_time, access=access, size=node.file_size, path=path)
 
         current_dir.items.append(obj)
 
@@ -77,7 +77,11 @@ def build_root_from_tar_info(infolist: [...]):
         current_dir = root
 
         for item in path[:-1]:
-            current_dir = current_dir.find_item_by_name(item)
+            t = current_dir.find_item_by_name(item)
+            if t is None:
+                print("Error in loading data:", current_dir, item, path)
+            else:
+                current_dir = t
 
         access_flags = get_access_string_from_tar_info(node)
 

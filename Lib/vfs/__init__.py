@@ -30,10 +30,10 @@ def init(path: str, mode="auto"):
     archive_path_on_init = path
     mode_on_init = mode
     if mode == "zip":
-        with zipfile.ZipFile("ExampleDir/archive.zip", 'r') as zip_archive:
+        with zipfile.ZipFile(path, 'r') as zip_archive:
             vfs_root = build_root_from_zip_info(zip_archive.infolist())
     elif mode == "tar":
-        with tarfile.TarFile.open('ExampleDir/archive.tar') as tar:
+        with tarfile.TarFile.open(path) as tar:
             vfs_root = build_root_from_tar_info(tar.getmembers())
     else:
         raise IOError("Not supported mode! Use only 'zip' or 'tar' or 'auto' modes!")
@@ -59,6 +59,9 @@ def simplify_path(path: str) -> str:
 
 def get_object_by_path(path: str) -> VFSFile or VFSDirectory or VFSRoot:
     path = simplify_path(path)
+    # if path == "..":
+    #     return '/' + "/".join(vfs_current_dir_obj.path.split("/")[:-1])
+
     # print("\033[35mDBG:\033[0m Get object by path : ", path)
     if path == '/':
         # print("\033[35mDBG:\033[0m Get object by path : returned /")

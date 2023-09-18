@@ -11,7 +11,7 @@ class VFSObject:
     date = (1980, 1, 1, 0, 0, 0)
     user = "root"
     group = "root"
-    path = ""
+    path = "/"
 
     def __str__(self) -> str:
         return self.name
@@ -33,7 +33,7 @@ class VFSObject:
     def print_recursion(self, t=0):
         print("\t" * t + '|-', self.name)
         for item in self.items:
-            item.print_recursion(t=t+1)
+            item.print_recursion(t=t + 1)
 
 
 class VFSRoot(VFSObject):
@@ -49,7 +49,9 @@ class VFSDirectory(VFSObject):
         if access is None:
             access = "d---------"
         self.name = name.strip("/")
-        self.path = path
+        self.path = path.strip("./")
+        if not self.path.startswith('/'):
+            self.path = '/' + self.path
         self.access = access
         if items is None:
             self.items = []
@@ -63,7 +65,9 @@ class VFSFile(VFSObject):
         if access is None:
             access = "----------"
         self.name = name.strip("/")
-        self.path = path
+        self.path = path.strip("./")
+        if not self.path.startswith('/'):
+            self.path = '/' + self.path
         self.file_size = size
         self.access = access
         self.date = date
