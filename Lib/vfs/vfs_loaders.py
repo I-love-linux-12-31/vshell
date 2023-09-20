@@ -40,6 +40,7 @@ def build_root_from_zip_info(infolist: [...]):
         # print(node)
         node: zipfile.ZipInfo
         path = node.filename.strip("./").strip("/").split("/")
+        print("Loading item ith path: ", node.filename, path)
         name = path[-1]
         current_dir = root
 
@@ -53,9 +54,17 @@ def build_root_from_zip_info(infolist: [...]):
             access = None
 
         if node.is_dir():
-            obj = vfs_classes.VFSDirectory(name=name, date=node.date_time, access=access, path=path)
+            obj = vfs_classes.VFSDirectory(
+                name=name, date=node.date_time,
+                access=access, path=path,
+                arh_path=node.filename
+            )
         else:
-            obj = vfs_classes.VFSFile(name=name, date=node.date_time, access=access, size=node.file_size, path=path)
+            obj = vfs_classes.VFSFile(
+                name=name, date=node.date_time,
+                access=access, size=node.file_size,
+                path=path, arh_path=node.filename
+            )
 
         current_dir.items.append(obj)
 
@@ -67,28 +76,38 @@ def build_root_from_tar_info(infolist: [...]):
     passed_paths = set()
     for node in infolist:
         node: tarfile.TarInfo
+
+
         if node.name in passed_paths:
+            print("\033[33mScipp wrong item!\033[0m path: ", node.name)
             continue
         else:
             passed_paths.add(node.name)
         # print(node)
         path = node.name.strip("./").strip("/").split("/")
+        print("Loading item ith path: ", node.name, path)
         name = path[-1]
         current_dir = root
 
         for item in path[:-1]:
             t = current_dir.find_item_by_name(item)
             if t is None:
-                print("Error in loading data:", current_dir, item, path)
+                print("\033[31mError in loading data\033[0m:", current_dir, item, path)
             else:
                 current_dir = t
 
         access_flags = get_access_string_from_tar_info(node)
 
         if node.isdir():
-            obj = vfs_classes.VFSDirectory(name=name, date=node.mtime, access=access_flags, path=node.path)
+            obj = vfs_classes.VFSDirectory(
+                name=name, date=node.mtime,
+                access=access_flags, path=node.path,
+                arh_path=node.name)
         else:
-            obj = vfs_classes.VFSFile(name=name, date=node.mtime, access=access_flags, size=node.size, path=node.path)
+            obj = vfs_classes.VFSFile(
+                name=name, date=node.mtime,
+                access=access_flags, size=node.size,
+                path=node.path, arh_path=node.name)
 
         current_dir.items.append(obj)
 

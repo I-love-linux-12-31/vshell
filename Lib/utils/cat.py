@@ -22,7 +22,7 @@ def app(target):
                 for line in f:
                     print(line)
     elif mode == "tar":
-        target = '.' + target
+        # target = '.' + target
         with tarfile.TarFile.open(archive_path_on_init) as tar:
             f = tar.extractfile(target)
             content = f.read()
@@ -42,11 +42,6 @@ def cat(*args, **kwargs):
     if obj.__class__.__name__ != "VFSFile":
         print(f"\033[31mIs not a file!\033[0m")
         return
-    path = obj.path
-    if path.startswith("./"):
-        path = Lib.vfs.simplify_path(Lib.vfs.vfs_current_dir_obj.path + "/" + path[2:])
-
-    if not path.startswith('/'):
-        path = '/' + path
-    # print(f"\033[31mCAT: {path}\033[0m")
+    path = obj.path_in_archive
+    print("\033[34mIn app()\033[0m", path)
     app(path)

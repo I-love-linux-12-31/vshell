@@ -7,11 +7,18 @@ from Lib.argparse import Command
 from Lib.utils import *
 
 
-def main(path: str, mode: str = "auto", script: str = None):
-    if script is not None and os.path.exists(script):
+def main(path: str, mode: str = "auto", script: str = None, external_script: str = None):
+    if external_script is not None and os.path.exists(external_script):
         scriptmode = True
-        f = open(script, "rt", encoding="utf-8")
+        f = open(external_script, "rt", encoding="utf-8")
         sys.stdin = f
+    elif script is not None:
+        print("Script:", script)
+        if Lib.vfs.get_object_by_path(script) is not None:
+            print("OK")
+        else:
+            print("Path error!")
+
     else:
         scriptmode = False
 
@@ -60,6 +67,7 @@ if __name__ == "__main__":
                                                  ' App works in virtual filesystem inside a archives (tar, zip)')
     parser.add_argument('--archive', type=str, help='Path to archive.', default="ExampleDir/archive.tar")
     parser.add_argument('--script', type=str, help='Path to script INSIDE a archive')
+    parser.add_argument('--external_script', type=str, help='Path to script', default=None)
     args = parser.parse_args()
-    main(path=args.archive, script=args.script)
+    main(path=args.archive, script=args.script, external_script=args.external_script)
     # todo: script must be in archive !!! not by fs path! By vfs path!

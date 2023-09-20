@@ -12,6 +12,7 @@ class VFSObject:
     user = "root"
     group = "root"
     path = "/"
+    path_in_archive = ""
 
     def __str__(self) -> str:
         return self.name
@@ -45,9 +46,10 @@ class VFSRoot(VFSObject):
 
 
 class VFSDirectory(VFSObject):
-    def __init__(self, name, date, path, access=None, items=None):
+    def __init__(self, name, date, path, arh_path, access=None, items=None):
         if access is None:
             access = "d---------"
+        self.path_in_archive = arh_path
         self.name = name.strip("/")
         self.path = path.strip("./")
         if not self.path.startswith('/'):
@@ -61,11 +63,12 @@ class VFSDirectory(VFSObject):
 
 
 class VFSFile(VFSObject):
-    def __init__(self, name, size, date, path, access=None):
+    def __init__(self, name, size, date, path, arh_path, access=None):
         if access is None:
             access = "----------"
         self.name = name.strip("/")
         self.path = path.strip("./")
+        self.path_in_archive = arh_path
         if not self.path.startswith('/'):
             self.path = '/' + self.path
         self.file_size = size

@@ -1,5 +1,8 @@
 ls -l
-cat s1.sh
-cd dir
+cat /test_big/home/yaroslav_admin/readme.txt
+cd test_big/home/yaroslav_admin
+echo =======================
 ls
+echo =======================
+lsn -l
 exit
