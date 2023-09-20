@@ -8,22 +8,25 @@ from Lib.utils import *
 
 
 def main(path: str, mode: str = "auto", script: str = None, external_script: str = None):
+
+    Lib.vfs.init(path, mode)
+
     if external_script is not None and os.path.exists(external_script):
         scriptmode = True
         f = open(external_script, "rt", encoding="utf-8")
         sys.stdin = f
     elif script is not None:
+        scriptmode = True
         print("Script:", script)
-        # todo: fix crash on line 18!!!
         if Lib.vfs.get_object_by_path(script) is not None:
             print("OK")
         else:
             print("Path error!")
+            exit(0)
 
     else:
         scriptmode = False
 
-    Lib.vfs.init(path, mode)
     cmd = ""
     while cmd.upper() != "EXIT":
         if not scriptmode:

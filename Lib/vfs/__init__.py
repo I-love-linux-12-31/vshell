@@ -77,6 +77,8 @@ def get_object_by_path(path: str) -> VFSFile or VFSDirectory or VFSRoot:
     else:
         cur = vfs_current_dir_obj
 
+    # print(cur)
+
     # print(path)
     stack = simplify_path(path).split("/")
     # print(stack)
@@ -90,8 +92,9 @@ def get_object_by_path(path: str) -> VFSFile or VFSDirectory or VFSRoot:
         cur: VFSObject
         s = stack.pop(0)
         path_before.append(s)
-        # print(f"\033[35mDBG:\033[0m path before {path_before} : now {s}")
+        # print(f"\033[35mDBG:\033[0m path before {path_before} : now {s} || cur = {cur.name}")
         if s != ".." and s != "./..":
+            # print(s, [i.name for i in cur.items])
             cur = cur.find_item_by_name(s)
         else:
             req = '/'.join(path_before[:-2])
