@@ -14,6 +14,7 @@ def main(path: str, mode: str = "auto", script: str = None, external_script: str
         sys.stdin = f
     elif script is not None:
         print("Script:", script)
+        # todo: fix crash on line 18!!!
         if Lib.vfs.get_object_by_path(script) is not None:
             print("OK")
         else:
@@ -26,9 +27,18 @@ def main(path: str, mode: str = "auto", script: str = None, external_script: str
     cmd = ""
     while cmd.upper() != "EXIT":
         if not scriptmode:
-            cmd = input(f"\033[34mroot@vshell:\033[32m{Lib.vfs.current_dir}\033[0m$")
+            try:
+                cmd = input(f"\033[34mroot@vshell:\033[32m{Lib.vfs.current_dir}\033[0m$")
+            except KeyboardInterrupt:
+                exit(0)
         else:
-            cmd = input()
+            try:
+                cmd = input()
+            except UnicodeDecodeError:
+                print("\033[31mBad script file encoding! UTF-8 required.\033[0m")
+                exit(1)
+            except KeyboardInterrupt or EOFError:
+                exit(0)
 
         if not cmd.strip():
             continue
@@ -70,4 +80,3 @@ if __name__ == "__main__":
     parser.add_argument('--external_script', type=str, help='Path to script', default=None)
     args = parser.parse_args()
     main(path=args.archive, script=args.script, external_script=args.external_script)
-    # todo: script must be in archive !!! not by fs path! By vfs path!
