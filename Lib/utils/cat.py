@@ -38,10 +38,11 @@ def cat(*args, **kwargs):
     obj = Lib.vfs.get_object_by_path(path)
     if obj is None:
         print(f"\033[31mInvalid path!\033[0m")
-        return
+        return False
     if obj.__class__.__name__ != "VFSFile":
         print(f"\033[31mIs not a file!\033[0m")
-        return
+        return False
     path = obj.path_in_archive
-    print("\033[34mIn app()\033[0m", path)
+    # print("\033[34mIn app()\033[0m", path)
     app(path)
+    return True

@@ -1,6 +1,7 @@
 import argparse
 import os.path
 import sys
+from io import StringIO
 
 import Lib.vfs
 from Lib.argparse import Command
@@ -17,9 +18,28 @@ def main(path: str, mode: str = "auto", script: str = None, external_script: str
         sys.stdin = f
     elif script is not None:
         scriptmode = True
-        print("Script:", script)
-        if Lib.vfs.get_object_by_path(script) is not None:
-            print("OK")
+        try:
+            target_obj = Lib.vfs.get_object_by_path(script)
+        except:
+            print("\033[33mBad scrit path!\033[0m")
+            exit(1)
+        # print("Script:", script)
+
+        if target_obj is not None:
+            sys_out = sys.stdout
+            sys.stdout = StringIO()
+
+            # cat(args=[script, ])
+            Command(f"cat {script}")(cat)
+
+            script_code = sys.stdout.getvalue()
+
+            sys.stdout.close()
+            sys.stdout = sys_out
+            sys.stdin = StringIO(script_code)
+            # print("Script code:")
+            # print(script_code)
+            # print("Script code ended")
         else:
             print("Path error!")
             exit(0)
@@ -40,7 +60,9 @@ def main(path: str, mode: str = "auto", script: str = None, external_script: str
             except UnicodeDecodeError:
                 print("\033[31mBad script file encoding! UTF-8 required.\033[0m")
                 exit(1)
-            except KeyboardInterrupt or EOFError:
+            except KeyboardInterrupt:
+                exit(0)
+            except EOFError:
                 exit(0)
 
         if not cmd.strip():
@@ -66,7 +88,7 @@ def main(path: str, mode: str = "auto", script: str = None, external_script: str
                 case "EXIT":
                     pass
                 case _:
-                    print("\033[33mCommand not found!\033[0m")
+                    print(f"\033[33mCommand not found: \033[35m{parsed_command.cmd}\033[0m")
         except EOFError:
             return
         except KeyboardInterrupt:

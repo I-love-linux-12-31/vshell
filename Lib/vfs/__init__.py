@@ -46,7 +46,7 @@ def simplify_path(path: str) -> str:
     for s in path.split('/'):
         if s in ('', '.'):
             continue
-        if s == '..' and False:
+        if s == '..' and len(stack) > 0 and stack[-1] != "..":
             if stack:
                 stack.pop()
         else:
@@ -84,6 +84,8 @@ def get_object_by_path(path: str) -> VFSFile or VFSDirectory or VFSRoot:
     # print(stack)
     if len(stack) > 1:
         stack = stack[1:]
+    if len(stack) == 1 and stack[0] == '':
+        return vfs_root
     # print(path)
     # print(stack)
     path_before = []
