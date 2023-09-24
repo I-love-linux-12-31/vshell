@@ -20,7 +20,7 @@ def app(target):
         with zipfile.ZipFile(archive_path_on_init, 'r') as zip_archive:
             with zip_archive.open(target) as f:
                 for line in f:
-                    print(line)
+                    print(line.decode("utf-8"))
     elif mode == "tar":
         # target = '.' + target
         with tarfile.TarFile.open(archive_path_on_init) as tar:

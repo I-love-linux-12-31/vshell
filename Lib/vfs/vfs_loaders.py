@@ -56,14 +56,14 @@ def build_root_from_zip_info(infolist: [...]):
         if node.is_dir():
             obj = vfs_classes.VFSDirectory(
                 name=name, date=node.date_time,
-                access=access, path=path,
+                access=access, path='/' + '/'.join(path),
                 arh_path=node.filename,
             )
         else:
             obj = vfs_classes.VFSFile(
                 name=name, date=node.date_time,
                 access=access, size=node.file_size,
-                path=path, arh_path=node.filename,
+                path='/' + '/'.join(path), arh_path=node.filename,
             )
 
         current_dir.items.append(obj)
