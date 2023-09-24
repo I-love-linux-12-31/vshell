@@ -8,6 +8,12 @@ from Lib.argparse import Command
 from Lib.utils import *
 
 
+if sys.platform == "win32":
+    import ctypes
+    kernel32 = ctypes.windll.kernel32
+    kernel32.SetConsoleMode(kernel32.GetStdHandle(-11), 7)
+
+
 def main(path: str, mode: str = "auto", script: str = None, external_script: str = None):
     try:
         Lib.vfs.init(path, mode)
