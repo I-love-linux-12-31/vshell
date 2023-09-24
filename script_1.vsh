@@ -1,6 +1,6 @@
 ls -l
-cat /test_big/home/yaroslav_admin/readme.txt
-cd test_big/home/yaroslav_admin
+cat /home/yaroslav_admin/readme.txt
+cd /home/yaroslav_admin
 echo =======================
 ls
 echo =======================

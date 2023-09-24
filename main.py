@@ -9,8 +9,11 @@ from Lib.utils import *
 
 
 def main(path: str, mode: str = "auto", script: str = None, external_script: str = None):
-
-    Lib.vfs.init(path, mode)
+    try:
+        Lib.vfs.init(path, mode)
+    except FileNotFoundError:
+        print("\033[31mFailed to open archive!\033[0m")
+        exit(1)
 
     if external_script is not None and os.path.exists(external_script):
         scriptmode = True
